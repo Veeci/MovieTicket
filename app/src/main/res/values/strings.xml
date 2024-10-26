@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MovieTicketApp</string>
+    <string name="error">Something went wrong!</string>
 </resources>

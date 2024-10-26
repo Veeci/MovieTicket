@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/errorScreen">
+
+    <dialog
+        android:id="@+id/errorScreen"
+        android:name="com.example.movieticketapp.presentation.error.ErrorScreen"
+        android:label="ErrorScreen" /><action android:id="@+id/action_global_errorScreen" app:destination="@id/errorScreen"/>
+</navigation>
