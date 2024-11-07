@@ -54,7 +54,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityRouter, MainN
         return super.getLoadingView().apply {
             (this as BaseLoadingView).setLogo(
                 resources.getDrawable(
-                    // R.drawable.ic_logo,
+                    R.drawable.ic_logo,
                     null,
                 ),
             )
