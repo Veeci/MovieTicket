@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.movieticketapp"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.movieticketapp"
@@ -57,4 +57,6 @@ dependencies {
     implementation("com.github.koai-dev:base:1.7.6")
 
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
+
+    implementation("androidx.core:core-splashscreen:1.0.0")
 }

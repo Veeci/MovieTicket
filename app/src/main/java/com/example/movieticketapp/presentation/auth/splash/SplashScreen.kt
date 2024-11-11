@@ -1,64 +1,68 @@
 package com.example.movieticketapp.presentation.auth.splash
 
+import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import android.view.ViewTreeObserver
+import androidx.core.animation.doOnEnd
+import com.example.movieticketapp.MainNavigator
 import com.example.movieticketapp.R
+import com.example.movieticketapp.databinding.FragmentSplashScreenBinding
+import com.example.movieticketapp.domain.viewmodels.MovieViewModel
+import com.koai.base.main.extension.navigatorViewModel
+import com.koai.base.main.extension.screenViewModel
+import com.koai.base.main.screens.BaseScreen
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+@SuppressLint("CustomSplashScreen")
+class SplashScreen : BaseScreen<FragmentSplashScreenBinding, SplashRouter, MainNavigator>(R.layout.fragment_splash_screen) {
+    override val navigator: MainNavigator by navigatorViewModel()
+    private val movieViewModel: MovieViewModel by screenViewModel()
 
-/**
- * A simple [Fragment] subclass.
- * Use the [SplashScreen.newInstance] factory method to
- * create an instance of this fragment.
- */
-class SplashScreen : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun initView(
         savedInstanceState: Bundle?,
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_splash_screen, container, false)
+        binding: FragmentSplashScreenBinding,
+    ) {
+        observe()
+        initialize()
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SplashScreen.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(
-            param1: String,
-            param2: String,
-        ) = SplashScreen().apply {
-            arguments =
-                Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    private fun observe() {
+        movieViewModel.popularList.observe(viewLifecycleOwner) { list ->
+            val contentView = binding.root
+            contentView.viewTreeObserver.addOnPreDrawListener(
+                object : ViewTreeObserver.OnPreDrawListener {
+                    override fun onPreDraw(): Boolean {
+                        return if (list.isNotEmpty()) {
+                            contentView.viewTreeObserver.removeOnPreDrawListener(this)
+                            animateExit()
+                            true
+                        } else {
+                            false
+                        }
+                    }
+                },
+            )
         }
+    }
+
+    private fun initialize() {
+        movieViewModel.getPopularList()
+    }
+
+    private fun animateExit() {
+        val splashScreenView = binding.root
+
+        val slideUp = ObjectAnimator.ofFloat(splashScreenView, View.TRANSLATION_Y, 0f, -splashScreenView.height.toFloat())
+        slideUp.duration = 200L
+        slideUp.startDelay = 1000L
+        slideUp.interpolator = android.view.animation.AnticipateInterpolator()
+
+        slideUp.doOnEnd {
+            splashScreenView.visibility = View.GONE
+            navigator.goToLoginScreen()
+        }
+
+        slideUp.start()
     }
 }
