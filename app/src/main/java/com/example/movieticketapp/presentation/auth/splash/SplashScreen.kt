@@ -13,6 +13,7 @@ import com.example.movieticketapp.domain.viewmodels.MovieViewModel
 import com.koai.base.main.extension.navigatorViewModel
 import com.koai.base.main.extension.screenViewModel
 import com.koai.base.main.screens.BaseScreen
+import com.koai.base.network.ResponseStatus
 
 @SuppressLint("CustomSplashScreen")
 class SplashScreen : BaseScreen<FragmentSplashScreenBinding, SplashRouter, MainNavigator>(R.layout.fragment_splash_screen) {
@@ -28,12 +29,12 @@ class SplashScreen : BaseScreen<FragmentSplashScreenBinding, SplashRouter, MainN
     }
 
     private fun observe() {
-        movieViewModel.popularList.observe(viewLifecycleOwner) { list ->
+        movieViewModel.statusFetchData.observe(viewLifecycleOwner) { status ->
             val contentView = binding.root
             contentView.viewTreeObserver.addOnPreDrawListener(
                 object : ViewTreeObserver.OnPreDrawListener {
                     override fun onPreDraw(): Boolean {
-                        return if (list.isNotEmpty()) {
+                        return if (status == ResponseStatus.Success(true)) {
                             contentView.viewTreeObserver.removeOnPreDrawListener(this)
                             animateExit()
                             true
@@ -48,6 +49,9 @@ class SplashScreen : BaseScreen<FragmentSplashScreenBinding, SplashRouter, MainN
 
     private fun initialize() {
         movieViewModel.getPopularList()
+        movieViewModel.getNowPlayingList()
+        movieViewModel.getTopRatedList()
+        movieViewModel.getUpComingList()
     }
 
     private fun animateExit() {

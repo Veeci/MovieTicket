@@ -1,6 +1,7 @@
 package com.example.movieticketapp.domain.viewmodels
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.movieticketapp.data.ApiService
 import com.example.movieticketapp.data.models.movies.BaseMovieList
@@ -52,6 +53,16 @@ class MovieViewModel(private val apiService: ApiService) : BaseViewModel() {
 
     private val _movieDetail = MutableLiveData<Movie?>()
     val movieDetail: LiveData<Movie?> = _movieDetail
+
+    private val _statusFetchData = MediatorLiveData<ResponseStatus<Boolean>>()
+    val statusFetchData: LiveData<ResponseStatus<Boolean>> = _statusFetchData
+
+    init {
+        _statusFetchData.addSource(statusGetNowPLaying) { checkDataIsReady() }
+        _statusFetchData.addSource(statusGetPopular) { checkDataIsReady() }
+        _statusFetchData.addSource(statusGetTopRated) { checkDataIsReady() }
+        _statusFetchData.addSource(statusGetUpComing) { checkDataIsReady() }
+    }
 
     fun getNowPlayingList(isReset: Boolean = false) {
         val currentData =
@@ -219,6 +230,19 @@ class MovieViewModel(private val apiService: ApiService) : BaseViewModel() {
                 )
                 _upComingList.postValue(currentData)
             }
+        }
+    }
+
+    fun checkDataIsReady() {
+        _statusFetchData.postValue(ResponseStatus.Loading)
+        if (_statusGetNowPLaying.value is ResponseStatus.Success &&
+            _statusGetPopular.value is ResponseStatus.Success &&
+            _statusGetTopRated.value is ResponseStatus.Success &&
+            _statusGetUpComing.value is ResponseStatus.Success
+        ) {
+            _statusFetchData.postValue(ResponseStatus.Success(true))
+        } else {
+            _statusFetchData.postValue(ResponseStatus.Error(message = "Data is not ready"))
         }
     }
 

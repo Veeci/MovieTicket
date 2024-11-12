@@ -22,10 +22,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.movieticketapp" />
+                  <option name="mobileSdkAppId" value="1:558849033913:android:0ca95afdf657d4c1753d68" />
+                  <option name="projectId" value="movieticket-68ebf" />
+                  <option name="projectNumber" value="558849033913" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
